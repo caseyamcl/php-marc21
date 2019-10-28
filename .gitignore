@@ -1,1 +1,15 @@
+# IDE stuff
 .DS_Store
+.idea/
+
+# Test stuff
+build
+
+# Composer stuff
+composer.lock
+vendor
+
+# Quality assurance stuff
+phpcs.xml
+phpunit.xml
+.phpunit.result.cache

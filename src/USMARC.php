@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PhpMarc;
 
 /**
  * USMARC Class
- * Extension class to File class, which allows passing of raw MARC string
- * instead of filename
+ * Extension class to File class, which allows passing of raw MARC string instead of filename
+ *
+ * @author Casey McLaughlin <caseyamcl@gmail.com>
  */
 Class USMARC Extends File {
 	/**
@@ -17,5 +20,3 @@ Class USMARC Extends File {
 		$this->pointer = 0;
 	}
 }
-
-/* EOF: USMARC.php */

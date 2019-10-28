@@ -1,12 +1,14 @@
-#phpMARC21
+# phpMARC21
 
 This is [php-marc.php](https://sourceforge.net/projects/phpmarc/) packaged for use with Composer. 
 
-##Description
+## Description
 
-MARC Record parser. Syntatically and logically identical to the Perl library MARC::Record. MARC parsing rules have been checked up from `MARC::Record`.
+MARC Record parser. Syntactically and logically identical to the 
+Perl library MARC::Record. MARC parsing rules have been checked up from
+`MARC::Record`.
 
-##Authors
+## Authors
 
 * Christoffer Landtman <landtman@realnode.com> - Original Author
 * Grant Gingell <ggingell@fsu.edu> - Repackaged and Updated
