@@ -267,7 +267,7 @@ Class File
 			if ( preg_match("/^\d+$/", $tagno) && ($tagno < 10) ) {
 				$marc->append_fields(new Field($tagno, $tagdata));
 			} else {
-				$subfields = @split(self::SUBFIELD_INDICATOR, $tagdata);
+				$subfields = @explode(self::SUBFIELD_INDICATOR, $tagdata);
 				$indicators = array_shift($subfields);
 
 				if ( strlen($indicators) > 2 || strlen( $indicators ) == 0 ) {
