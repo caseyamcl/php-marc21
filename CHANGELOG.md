@@ -2,6 +2,7 @@
 
 ### Fixed
 - Replaced `split` with `explode` in `File.php`
+- Added some files to ignore to `.gitignore`
 
 ## v1.0 - 2016-06-14
 
