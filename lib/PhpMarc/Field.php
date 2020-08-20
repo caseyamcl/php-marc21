@@ -1,66 +1,59 @@
 <?php
 
-declare(strict_types=1);
-
 namespace PhpMarc;
 
 /**
- * Class Field
- *
- * @author Casey McLaughlin <caseyamcl@gmail.com>
+ * Field Class
+ * Create a MARC Field object
  */
-Class Field
-{
+Class Field {
+	
 	/**
 	 * ========== VARIABLE DECLARATIONS ==========
 	 */
 
 	/**
 	 * Hexadecimal value for Subfield indicator
+	 * @global hex SUBFIELD_INDICATOR
 	 */
-	private const SUBFIELD_INDICATOR = "\x1F";
+	const SUBFIELD_INDICATOR = "\x1F";
 
 	/**
 	 * Hexadecimal value for End of Field
+	 * @global hex END_OF_FIELD
 	 */
-	private const END_OF_FIELD = "\x1E";
-
+	const END_OF_FIELD = "\x1E";
+	
 	/**
 	 * The tag name of the Field
 	 * @var string
 	 */
 	var $tagno;
-
 	/**
 	 * Value of the first indicator
 	 * @var string
-	 */
+	 */ 
 	var $ind1;
-
 	/**
 	 * Value of the second indicator
 	 * @var string
 	 */
 	var $ind2;
-
 	/**
 	 * Array of subfields
 	 * @var array
 	 */
 	var $subfields = array();
-
 	/**
 	 * Specify if the Field is a Control field
 	 * @var bool
 	 */
-	var $isControl;
-
+	var $is_control;
 	/**
 	 * Array of warnings
 	 * @var array
 	 */
 	var $warn;
-
 	/**
 	 * Value of field, if field is a Control field
 	 * @var string
@@ -71,20 +64,18 @@ Class Field
 	 * Constant Getters
 	 */
 
-	public static function getEndOfField()
-    {
+	public static function getEndOfField() {
 		return self::END_OF_FIELD;
 	}
-
-	public static function getSubFieldIndicator()
-    {
+	
+	public static function getSubFieldIndicator() {
 		return self::SUBFIELD_INDICATOR;
 	}
 
 	/**
 	 * Error Functions
 	 */
-
+	
 	/**
 	 * Croaking function
 	 *
@@ -92,60 +83,58 @@ Class Field
 	 * user error with a descriptive message.
 	 * @param string The message to display
 	 */
-	function _croak($msg)
-    {
+	function _croak($msg) {
 		trigger_error($msg, E_USER_ERROR);
 	}
-
+	
 	/**
-	 * Function to issue warnings
+	 * Fuction to issue warnings
 	 *
 	 * Warnings will not be displayed unless explicitly accessed, but all
 	 * warnings issued during parse will be stored
-     *
 	 * @param string Warning
 	 * @return string Last added warning
 	 */
-	function _warn($msg): string
-    {
+	function _warn($msg) {
 		$this->warn[] = $msg;
 		return $msg;
 	}
-
+	
 	/**
 	 * Return an array of warnings
 	 */
-	function warnings(): array
-    {
+	function warnings() {
 		return $this->warn;
 	}
 
 	/**
+	 * Processing Functions
+	 */
+	
+	/**
 	 * Constructor
 	 *
 	 * Create a new Field object from passed arguments
-     *
 	 * @param array Array ( tagno, ind1, ind2, subfield_data )
 	 * @return string Returns warnings if any issued during parse
 	 */
-	function __construct()
-    {
+	function __construct() {
 		$args = func_get_args();
-
+		
 		$tagno = array_shift($args);
 		$this->tagno = $tagno;
-
+		
 		// Check if valid tag
-		if (! preg_match("/^[0-9A-Za-z]{3}$/", (string) $tagno)) {
+		if(!preg_match("/^[0-9A-Za-z]{3}$/", $tagno)) {
 			return $this->_warn("Tag \"$tagno\" is not a valid tag.");
 		}
-
+		
 		// Check if field is Control field
-		$this->isControl = (preg_match("/^\d+$/", $tagno) && $tagno < 10);
-		if($this->isControl) {
+		$this->is_control = (preg_match("/^\d+$/", $tagno) && $tagno < 10);
+		if($this->is_control) {
 			$this->data = array_shift($args);
 		} else {
-			foreach (["ind1", "ind2"] as $indCode) {
+			foreach (array("ind1", "ind2") as $indcode) {
 				$indicator = array_shift($args);
 				if(!preg_match("/^[0-9A-Za-z ]$/", $indicator)) {
 					if($indicator != "") {
@@ -153,19 +142,19 @@ Class Field
 					}
 					$indicator = " ";
 				}
-				$this->$indCode = $indicator;
+				$this->$indcode = $indicator;
 			}
-
+			
 			$subfields = array_shift($args);
-
-			if (count($subfields) < 1) {
+			
+			if(count($subfields) < 1) {
 				return $this->_warn("Field $tagno must have at least one subfield");
 			} else {
-				$this->addSubfields($subfields);
+				$this->add_subfields($subfields);
 			}
 		}
 	}
-
+	
 	/**
 	 * Add subfield
 	 *
@@ -173,31 +162,29 @@ Class Field
 	 * @param array Subfield data
 	 * @return string Returns warnings if issued during parse.
 	 */
-	function addSubfields(): string
-    {
+	function add_subfields() {
 		// Process arguments
 		$args = func_get_args();
 		if(count($args) == 1 && is_array($args[0])) {
 			$args = $args[0];
 		}
 		// Add subfields, is appropriate
-		if ($this->isControl) {
+		if ($this->is_control) {
 			return $this->_warn("Subfields allowed only for tags bigger or equal to 10");
 		} else {
 			$this->subfields = array_merge($this->subfields, $args);
 		}
-
-		return (string) (count($args) / 2);
+		
+		return count($args)/2;
 	}
-
+	
 	/**
 	 * Return Tag number of Field
 	 */
-	function tagno()
-    {
+	function tagno() {
 		return $this->tagno;
 	}
-
+	
 	/**
 	 * Set/Get Data of Control field
 	 *
@@ -205,28 +192,24 @@ Class Field
 	 * @param string Data to be set
 	 * @return string Data of Control field if argument not given
 	 */
-	function data(string $data = ""): string
-    {
-		if (!$this->isControl) {
+	function data($data = "") {
+		if(!$this->is_control) {
 			$this->_croak("data() is only allowed for tags bigger or equal to 10");
 		}
-
-		if ($data) {
+		if($data) {
 			$this->data = $data;
 		} else {
 			return $this->data;
 		}
 	}
-
-    /**
-     * Get values of indicators
-     *
-     * @param int Indicator number
-     * @return string
-     */
-	function indicator(int $ind): string
-    {
-		if ($ind == 1) {
+	
+	/**
+	 * Get values of indicators
+	 *
+	 * @param string Indicator number
+	 */
+	function indicator($ind) {
+		if($ind == 1) {
 			return $this->ind1;
 		} elseif ($ind == 2) {
 			return $this->ind2;
@@ -234,17 +217,16 @@ Class Field
 			$this->_warn("Invalid indicator: $ind");
 		}
 	}
-
+	
 	/**
 	 * Check if Field is Control field
 	 *
 	 * @return bool True or False
 	 */
-	function isControl(): bool
-    {
-		return $this->isControl;
+	function is_control() {
+		return $this->is_control;
 	}
-
+	
 	/**
 	 * Get the value of a subfield
 	 *
@@ -252,35 +234,36 @@ Class Field
 	 * @param string Name of subfield
 	 * @return string|false Value of the subfield if exists, otherwise false
 	 */
-	function subfield($code)
-    {
-        return array_key_exists($code, $this->subfields) ? $this->subfields[$code] : false;
+	function subfield($code) {
+		if(array_key_exists($code, $this->subfields)) {
+			return $this->subfields[$code];
+		} else {
+			return false;
+		}
 	}
-
+	
 	/**
 	 * Return array of subfields
 	 *
 	 * @return array Array of subfields
 	 */
-	function subfields(): array
-    {
+	function subfields() {
 		return $this->subfields;
 	}
-
+	
 	/**
 	 * Update Field
 	 *
 	 * Update Field with given array of arguments.
 	 * @param array Array of key->value pairs of data
 	 */
-	function update()
-    {
+	function update() {
 		// Process arguments
 		$args = func_get_args();
 		if(count($args) == 1 && is_array($args[0])) {
 			$args = $args[0];
 		}
-		if($this->isControl) {
+		if($this->is_control) {
 			$this->data = array_shift($args);
 		} else {
 			foreach ($args as $subfield => $value) {
@@ -294,45 +277,43 @@ Class Field
 			}
 		}
 	}
-
+	
 	/**
 	 * Replace Field with given Field
 	 *
 	 * @param Field Field to replace with
 	 */
-	function replaceWith($obj)
-    {
-		if(strtolower(get_class($obj)) == Field::class) {
+	function replace_with($obj) {
+		if(strtolower(get_class($obj)) == "PhpMarc\\Field") {
 			$this->tagno = $obj->tagno;
 			$this->ind1 = $obj->ind1;
 			$this->ind2 = $obj->ind2;
 			$this->subfields = $obj->subfields;
-			$this->isControl = $obj->is_control;
+			$this->is_control = $obj->is_control;
 			$this->warn = $obj->warn;
 			$this->data = $obj->data;
 		} else {
-			$this->_croak(sprintf("Argument must be instance of %s, but was '%s'", Field::class, get_class($obj)));
+			$this->_croak(sprintf("Argument must be Field-object, but was '%s'", get_class($obj)));
 		}
 	}
-
+	
 	/**
 	 * Clone Field
 	 *
 	 * @return Field Cloned Field object
 	 */
-	function makeClone()
-    {
-		if ($this->isControl) {
+	function make_clone() {
+		if($this->is_control) {
 			return new Field($this->tagno, $this->data);
 		} else {
 			return new Field($this->tagno, $this->ind1, $this->ind2, $this->subfields);
 		}
 	}
-
+	
 	/**
 	 * ========== OUTPUT FUNCTIONS ==========
 	 */
-
+	
 	/**
 	 * Return Field formatted
 	 *
@@ -340,12 +321,11 @@ Class Field
 	 * MARC::Record formatted() functio in Perl
 	 * @return string Formatted output of Field
 	 */
-	function formatted(): string
-    {
+	function formatted() {
 		// Variables
 		$lines = array();
 		// Process
-		if($this->isControl) {
+		if($this->is_control) {
 			return sprintf("%3s     %s", $this->tagno, $this->data);
 		} else {
 			$pre = sprintf("%3s %1s%1s", $this->tagno, $this->ind1, $this->ind2);
@@ -355,19 +335,18 @@ Class Field
 			$lines[] = sprintf("%6s _%1s%s", $pre, $subfield, $value);
 			$pre = "";
 		}
-
+		
 		return join("\n", $lines);
 	}
-
+	
 	/**
 	 * Return Field in Raw MARC
 	 *
 	 * Return the Field formatted in Raw MARC for saving into MARC files
 	 * @return string Raw MARC
 	 */
-	function raw(): string
-    {
-		if($this->isControl) {
+	function raw() {
+		if($this->is_control) {
 			return $this->data.$this->getEndOfField();
 		} else {
 			$subfields = array();
@@ -377,17 +356,15 @@ Class Field
 			return $this->ind1.$this->ind2.implode("", $subfields).$this->getEndOfField();
 		}
 	}
-
-    /**
-     * Return Field as String
-     *
-     * Return Field formatted as String, with either all subfields or special subfields as specified.
-     *
-     * @param string $fields
-     * @return string Formatted as String
-     */
-	function string(string $fields = ""): string
-    {
+	
+	/**
+	 * Return Field as String
+	 *
+	 * Return Field formatted as String, with either all subfields or special
+	 * subfields as specified.
+	 * @return string Formatted as String
+	 */
+	function string($fields = "") {
 		$matches = array();
 		if($fields) {
 			for($i=0; $i<strlen($fields); $i++) {
@@ -400,5 +377,5 @@ Class Field
 		}
 		return implode(" ", $matches);
 	}
-
+	
 }

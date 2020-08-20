@@ -1,37 +1,38 @@
-<?php
-
-declare(strict_types=1);
+<?php 
 
 namespace PhpMarc;
 
 /**
  * Record Class
- *
- * @author Casey McLaughlin <caseyamcl@gmail.com>
+ * Create a MARC Record class
  */
 Class Record {
-
+	
 	/**
 	 * ========== VARIABLE DECLARATIONS ==========
 	 */
-
+	
 	/**
 	 * Hexadecimal value for End of Field
+	 * @global hex END_OF_FIELD
 	 */
 	const END_OF_FIELD = "\x1E";
 
 	/**
 	 * Hexadecimal value for End of Record
+	 * @global hex END_OF_RECORD
 	 */
 	const END_OF_RECORD = "\x1D";
 
 	/**
 	 * Length of the Directory
+	 * @global integer DIRECTORY_ENTRY_LEN
 	 */
 	const DIRECTORY_ENTRY_LEN = 12;
 
 	/**
 	 * Length of the Leader
+	 * @global integer LEADER_LEN
 	 */
 	const LEADER_LEN = 24;
 
@@ -40,19 +41,17 @@ Class Record {
 	 * @var array
 	 */
 	var $fields;
-
 	/**
 	 * Leader of the Record
 	 * @var string
 	 */
 	var $ldr;
-
 	/**
 	 * Array of warnings
 	 * @var array
 	 */
 	var $warn;
-
+	
 	/**
 	 * Constant Getters
 	 */
@@ -60,7 +59,7 @@ Class Record {
 	public static function getEndOfField() {
 		return self::END_OF_FIELD;
 	}
-
+	
 	public static function getEndOfRecord() {
 		return self::END_OF_RECORD;
 	}
@@ -76,7 +75,7 @@ Class Record {
 	/**
 	 * ========== ERROR FUNCTIONS ==========
 	 */
-
+	
 	/**
 	 * Croaking function
 	 *
@@ -87,7 +86,7 @@ Class Record {
 	function _croak($msg) {
 		trigger_error($msg, E_USER_ERROR);
 	}
-
+	
 	/**
 	 * Fuction to issue warnings
 	 *
@@ -100,18 +99,18 @@ Class Record {
 		$this->warn[] = $msg;
 		return $msg;
 	}
-
+	
 	/**
 	 * Return an array of warnings
 	 */
 	function warnings() {
 		return $this->warn;
 	}
-
+	
 	/**
 	 * ========== PROCESSING FUNCTIONS ==========
 	 */
-
+	
 	/**
 	 * Constructor
 	 *
@@ -121,7 +120,7 @@ Class Record {
 		$this->fields = array();
 		$this->ldr = str_repeat(' ', 24);
 	}
-
+	
 	/**
 	 * Get/Set Leader
 	 *
@@ -137,7 +136,7 @@ Class Record {
 			return $this->ldr;
 		}
 	}
-
+	
 	/**
 	 * Append field to existing
 	 *
@@ -152,7 +151,7 @@ Class Record {
 			$this->_croak(sprintf("Given argument must be Field object, but was '%s'", get_class($field)));
 		}
 	}
-
+	
 	/**
 	 * Build Record Directory
 	 *
@@ -198,7 +197,7 @@ Class Record {
 
         return array($fields, $directory, $total, $baseaddress);
 	}
-
+	
 	/**
 	 * Set Leader lengths
 	 *
@@ -211,7 +210,7 @@ Class Record {
 		$this->ldr = substr_replace($this->ldr, '22', 10, 2);
 		$this->ldr = substr_replace($this->ldr, '4500', 20, 4);
 	}
-
+	
 	/**
 	 * Return all Field objects
 	 * @return array Array of Field objects
@@ -219,7 +218,7 @@ Class Record {
 	function fields() {
 		return $this->fields;
 	}
-
+	
 	/**
 	 * Get specific field
 	 *
@@ -234,7 +233,7 @@ Class Record {
 			return false;
 		}
 	}
-
+	
 	/**
 	 * Get subfield of Field object
 	 *
@@ -250,7 +249,7 @@ Class Record {
 			return $field->subfield($subfield);
 		}
 	}
-
+	
 	/**
 	 * Delete Field
 	 *
@@ -260,7 +259,7 @@ Class Record {
 	function delete_field($obj) {
 		unset($this->fields[$obj->field]);
 	}
-
+	
 	/**
 	 * Clone record
 	 *
@@ -279,11 +278,11 @@ Class Record {
 
 		return $clone;
 	}
-
+	
 	/**
 	 * ========== OUTPUT FUNCTIONS ==========
 	 */
-
+	
 	/**
 	 * Formatted representation of Field
 	 *
@@ -315,7 +314,7 @@ Class Record {
 			return false;
 		}
 	}
-
+	
 	/**
 	 * Return Raw
 	 *
@@ -325,13 +324,13 @@ Class Record {
 	function raw() {
 		list ($fields, $directory, $reclen, $baseaddress) = $this->_build_dir();
 		$this->leader_lengths($reclen, $baseaddress);
-
+	
 		/**
 		 * Glue together all parts
 		 */
 		return $this->ldr.implode("", $directory).$this->getEndOfField().implode("", $fields).$this->getEndOfRecord();
 	}
-
+    
 	/**
 	 * Return formatted
 	 *
@@ -349,5 +348,3 @@ Class Record {
 		return $formatted;
 	}
 }
-
-/* EOF: Record.php */

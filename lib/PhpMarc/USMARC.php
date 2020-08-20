@@ -1,14 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
 namespace PhpMarc;
 
 /**
  * USMARC Class
- * Extension class to File class, which allows passing of raw MARC string instead of filename
- *
- * @author Casey McLaughlin <caseyamcl@gmail.com>
+ * Extension class to File class, which allows passing of raw MARC string
+ * instead of filename
  */
 Class USMARC Extends File {
 	/**

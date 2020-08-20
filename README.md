@@ -4,13 +4,7 @@ This is [php-marc.php](https://sourceforge.net/projects/phpmarc/) packaged for u
 
 ## Description
 
-MARC Record parser. Syntactically and logically identical to the 
-Perl library MARC::Record. MARC parsing rules have been checked up from
-`MARC::Record`.
-
-## Usage
-
-TODO: This
+MARC Record parser. Syntatically and logically identical to the Perl library MARC::Record. MARC parsing rules have been checked up from `MARC::Record`.
 
 ## Authors
 
