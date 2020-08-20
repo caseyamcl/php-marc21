@@ -36,11 +36,6 @@
         "check-style": "phpcs src tests",
         "fix-style": "phpcbf src tests"
     },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.0-dev"
-        }
-    },
     "config": {
         "sort-packages": true
     }
