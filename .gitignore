@@ -3,3 +3,4 @@ vendor/
 build/
 .idea/
 composer.lock
+.phpunit.cache

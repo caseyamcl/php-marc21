@@ -8,12 +8,13 @@ namespace PhpMarc;
  * instead of filename
  */
 Class USMARC Extends File {
-	/**
-	 * Read raw MARC string for decoding
-	 * @param string Raw MARC
-	*/
-	function usmarc($string) {
-		$this->raw[] = $string;
-		$this->pointer = 0;
-	}
+    /**
+     * Read raw MARC string for decoding
+     * @param string Raw MARC
+    */
+    function usmarc($string)
+    {
+        $this->raw[] = $string;
+        $this->pointer = 0;
+    }
 }

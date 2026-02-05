@@ -1,21 +1,14 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
+
 require_once(__DIR__ . '/../PhpMarc/File.php');
 
-class FileTest extends PHPUnit_Framework_TestCase {
-  
-  public function setUp() {
-    parent::setUp();
-  }
-
-  public function tearDown() {
-    parent::tearDown();
-  }  
-  
-  /*
-   * Tests
-   */
-  
+class FileTest extends TestCase
+{
+    /**
+     * @covers \PhpMarc\File::__construct
+     */
   public function testCreateFileResultsInNewObject() {
 
     $fileobj = new \PhpMarc\File();
@@ -23,5 +16,3 @@ class FileTest extends PHPUnit_Framework_TestCase {
   }
   
 }
-
-/* EOF: FileTest.php */

@@ -1,21 +1,14 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
+
 require_once(__DIR__ . '/../PhpMarc/Field.php');
 
-class FieldTest extends PHPUnit_Framework_TestCase {
-  
-  public function setUp() {
-    parent::setUp();
-  }
-
-  public function tearDown() {
-    parent::tearDown();
-  }  
-  
-  /*
-   * Tests
-   */
-  
+class FieldTest extends TestCase
+{
+    /**
+     * @covers \PhpMarc\Field::__construct
+     */
   public function testCreateFieldResultsInNewObject() {
 
     $field = new \PhpMarc\Field();
@@ -23,5 +16,3 @@ class FieldTest extends PHPUnit_Framework_TestCase {
   }
   
 }
-
-/* EOF: FieldTest.php */
